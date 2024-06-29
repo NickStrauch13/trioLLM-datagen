@@ -11,12 +11,28 @@
     <div class="page-container">
         <div class="input-container">
             <h1 class="title">Synthetic Data Generator</h1>
-            <p class="description">Generate synthetic text data for any fine-tuning task.</p>
+            <!-- <p class="description">Generate synthetic text data for any fine-tuning task.</p> -->
 
-            <p>((Number of data samples input goes here))</p>
-            <p>((Optional few-shot input box))</p>
+            <div class="dataSampleCount-container">
+                <!-- <p class="dataSampleCount-title">Number of data samples:</p> -->
+                <select class="dataSampleCount-selector" id="dataSampleCount">
+                    <option value="1" disabled selected># Samples</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">250</option>
+                </select>
+            </div>
+
+            <div class="large-text-input-container" id="fewshotInputContainer">
+                <textarea  type="text" id="fewshotInput1" class="textarea-box" placeholder="Optional fewshot input"></textarea>
+            </div>
+
+            <button id="addFewshotButton" class="add-fewshot-button">Add Fewshot Example</button>
+
             <div class="text-input-container">
-                <textarea  type="text" id="queryInput" class="textarea-box" placeholder="What type of data would you like to generate?"></textarea>
+                <textarea  type="text" id="queryInput" class="textarea-box" placeholder="What type of data would you like to generate?  (e.g. 'Call center transcripts')"></textarea>
                 <button id="submitButton" class="submit-button">
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
