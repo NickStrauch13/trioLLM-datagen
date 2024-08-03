@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../back
 from llm_trio import LLMTrio
 
 app = Flask(__name__)
-trio = LLMTrio(local=False)
+trio = LLMTrio(local=True)
 
 @app.route('/')
 def index():
