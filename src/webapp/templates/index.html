@@ -1,49 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Synth Data Gen</title>
-    <link rel="stylesheet" href="static/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
+    <link rel="stylesheet" href="static/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
     <div class="page-container">
-        <div class="input-container">
-            <h1 class="title">Synthetic Data Generator</h1>
-            <!-- <p class="description">Generate synthetic text data for any fine-tuning task.</p> -->
+      <div class="input-container">
+        <h1 class="title">Synthetic Data Generator</h1>
+        <!-- <p class="description">Generate synthetic text data for any fine-tuning task.</p> -->
 
-            <div class="parameters-container">
-                <div class="dataSampleCount-container">
-                    <!-- <p class="dataSampleCount-title">Number of data samples:</p> -->
-                    <select class="dataSampleCount-selector" id="dataSampleCount">
-                        <option value="1" disabled selected># Samples</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="200">250</option>
-                    </select>
-                </div>
+        <div class="parameters-container">
+          <div class="dataSampleCount-container">
+            <!-- <p class="dataSampleCount-title">Number of data samples:</p> -->
+            <select class="dataSampleCount-selector" id="dataSampleCount">
+              <option value="1" disabled selected># Samples</option>
+              <option value="1">1</option>
+              <option value="3">3</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="100">100</option>
+            </select>
+          </div>
 
-                <div class="large-text-input-container" id="fewshotInputContainer">
-                    <textarea  type="text" id="fewshotInput1" class="textarea-box" placeholder="Optional fewshot input"></textarea>
-                </div>
+          <div class="large-text-input-container" id="fewshotInputContainer">
+            <textarea
+              type="text"
+              id="fewshotInput1"
+              class="textarea-box"
+              placeholder="Optional fewshot input"
+            ></textarea>
+          </div>
 
-                <button id="addFewshotButton" class="add-fewshot-button">Add Fewshot Example</button>
-            </div>
-
-            <div class="text-input-container">
-                <textarea  type="text" id="queryInput" class="textarea-box" placeholder="What type of data would you like to generate?  (e.g. 'Call center transcripts')"></textarea>
-                <button id="submitButton" class="submit-button">
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </div>
+          <button id="addFewshotButton" class="add-fewshot-button">
+            Add Fewshot Example
+          </button>
         </div>
-        <div class="output-container">
 
+        <div class="text-input-container">
+          <textarea
+            type="text"
+            id="queryInput"
+            class="textarea-box"
+            placeholder="What type of data would you like to generate?  (e.g. 'Amazon product review')"
+          ></textarea>
+          <button id="submitButton" class="submit-button">
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          <button id="downloadButton" class="download-button" disabled>
+            Download CSV
+          </button>
         </div>
+
+        <div
+          id="loadingContainer"
+          class="loading-container"
+          style="display: none"
+        >
+          <p id="loadingText" class="loading-text">Generating data...</p>
+          <div id="loadingBar" class="loading-bar"></div>
+        </div>
+      </div>
     </div>
     <script src="static/js/script.js"></script>
-</body>
+  </body>
 </html>

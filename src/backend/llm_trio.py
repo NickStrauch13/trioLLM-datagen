@@ -8,7 +8,7 @@ load_dotenv()
 FEW_SHOT_JOINER = "\n---\n"
 PRINT_SEPARATOR = "-" * 50
 
-class Trio:
+class LLMTrio:
     def __init__(self, local: bool = True):
         self.actor_chain = Actor(local=local).get_chain()
         self.critic_chain = Critic(local=local).get_chain()
@@ -62,7 +62,7 @@ if __name__ == "__main__":
                         "I bought this book for my daughter and she absolutely loves it. She's read it 3 times already! Highly recommend."
                         "Don't buy. These batteries die after a few hours of use."
     ]
-    trio = Trio(local=True)
+    trio = LLMTrio(local=True)
     refined_data_sample = trio.invoke_trio(topic, few_shot_examples, verbose=True)
 
 

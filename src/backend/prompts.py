@@ -1,5 +1,5 @@
 USER_INPUT_TEMPLATE = (
-"Create a synthetic data sample representing a(n) {topic}. \n{few_shot}"
+"Create a single synthetic data sample representing a(n) {topic}. \n{few_shot}"
 )
 
 FEW_SHOT_TEMPLATE = (
