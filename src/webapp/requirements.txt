@@ -1,3 +1,4 @@
+# Requirements for the webapp and backend
 flask==3.0.3
 requests==2.32.3
 python-dotenv==1.0.1

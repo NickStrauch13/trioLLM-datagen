@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import os
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import Runnable
@@ -6,7 +7,9 @@ from langchain_core.runnables import Runnable
 
 PROPRIETARY_MODEL = "gpt-4o-mini"
 LOCAL_MODEL = "LLaMA_CPP"
-BASE_URL = "http://127.0.0.1:8080/v1"
+BASE_URL = os.getenv('LLM_ENDPOINT_URL')
+if not BASE_URL:
+  BASE_URL = "http://127.0.0.1:8080/v1"
 
 
 class BaseModel(ABC):
