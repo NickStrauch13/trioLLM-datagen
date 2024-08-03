@@ -1,64 +1,68 @@
-from langchain_openai import ChatOpenAI
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnableParallel, RunnablePassthrough
+from actor import Actor
+from critic import Critic
+from regenerator import Regenerator
+from prompts import FEW_SHOT_TEMPLATE
 from dotenv import load_dotenv
 load_dotenv()
 
+FEW_SHOT_JOINER = "\n---\n"
+PRINT_SEPARATOR = "-" * 50
 
-actor = ChatOpenAI(model="LLaMA_CPP", base_url="http://127.0.0.1:8080/v1", temperature=1.6, max_tokens=250)
-critic = ChatOpenAI(model="LLaMA_CPP", base_url="http://127.0.0.1:8080/v1", temperature=0.9, max_tokens=300)
-regenerator = ChatOpenAI(model="LLaMA_CPP", base_url="http://127.0.0.1:8080/v1", temperature=0.8, max_tokens=250)
-# actor = ChatOpenAI(model="gpt-3.5-turbo", temperature=1.6, max_tokens=250)
-# critic = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.9, max_tokens=150)
-# regenerator = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.8, max_tokens=250)
-
-actor_system_prompt = "You are an expert data generator. You are the best at creating unique, realistic data samples. You must ONLY respond with the data sample and nothing else."
-critic_system_prompt = "You are an expert data critic. Your task is to review the singular data sample and provide feedback on how it can be improved. Don't be afraid to be harsh."
-regenerator_system_prompt = "You are an expert data regenerator. Your task is to take the original input, the original output, and the critic's feedback, and generate a refined data sample. You must ONLY respond with the refined data sample and nothing else. DO NOT change the topic or any essential information of the original input."
-
-user_input_template = "Create a synthetic data sample representing a(n) {topic}. {few_shot}"
-
-actor_prompt_template = ChatPromptTemplate.from_messages(
-    [("system", actor_system_prompt), ("human", user_input_template)]
-)
-critic_prompt_template = ChatPromptTemplate.from_messages(
-    [("system", critic_system_prompt), ("human", "This was the prompt:" + user_input_template + "and this is the generated data sample: {actor_output}")]
-)
-regenerator_prompt_template = ChatPromptTemplate.from_messages(
-    [("system", regenerator_system_prompt), ("human", user_input_template), ("ai", "{actor_output}"), ("human", "{critic_output}")]
-)
-
-parser = StrOutputParser()
+class Trio:
+    def __init__(self, local: bool = True):
+        self.actor_chain = Actor(local=local).get_chain()
+        self.critic_chain = Critic(local=local).get_chain()
+        self.regenerator_chain = Regenerator(local=local).get_chain()
 
 
-actor_chain = actor_prompt_template | actor | parser
-critic_chain = critic_prompt_template | critic | parser
-regenerator_chain = regenerator_prompt_template | regenerator | parser
+    def invoke_trio(self, 
+                    topic: str, 
+                    few_shot_examples: list = [],
+                    verbose: bool = False) -> str:
+        """
+        Invoke the full trio of actor, critic, and regenerator chains to generate a refined data sample.
+            :param topic: The topic of the data sample.
+            :param few_shot_examples: A list of few-shot examples to guide the data generation.
+            :param verbose: Whether to print the output of each chain.
+            :return: The refined data sample.
+        """
+        # Format the few-shot examples.
+        few_shot_string = FEW_SHOT_JOINER.join(few_shot_examples)
+        few_shot_input = FEW_SHOT_TEMPLATE.format(few_shot_string=few_shot_string) if few_shot_examples else ""
+        input = {"topic": topic, "few_shot": few_shot_input}
 
-def invoke_full_chain(topic, few_shot_examples=[]):
-    few_shot_string = "\n---\n".join(few_shot_examples)
-    few_shot_template = f"Here are some examples of what I want the data sample to look like: {few_shot_string}. These are just a guide and you can use them as inspiration for your response."
+        # Generate the first version of the data sample with the actor.
+        actor_output = self.actor_chain.invoke(input)
+        if verbose:
+            print(f"Actor Output: \n{actor_output}\n\n")
+            print(PRINT_SEPARATOR)
 
-    input = {"topic": topic, "few_shot": few_shot_template if few_shot_examples else ""}
-    actor_output = actor_chain.invoke(input)
-    print(f"actor_output: \n{actor_output}\n\n")
-    print("-" * 50)
+        # Generate the critic's feedback on the data sample.
+        input["actor_output"] = actor_output
+        critic_output = self.critic_chain.invoke(input)
+        if verbose:
+            print(f"Critic Output: \n{critic_output}\n\n")
+            print(PRINT_SEPARATOR)
 
-    input["actor_output"] = actor_output
-    critic_output = critic_chain.invoke(input)
-    print(f"critic_output: \n{critic_output}\n\n")
-    print("-" * 50)
+        # Refine the data sample with the regenerator.
+        input["critic_output"] = critic_output
+        final_output = self.regenerator_chain.invoke(input)
+        if verbose:
+            print(f"Final Output: \n{final_output}\n\n")
+            print(PRINT_SEPARATOR)
 
-    input["critic_output"] = critic_output
-    final_output = regenerator_chain.invoke(input)
-    return final_output
+        return final_output
 
-#chain = actor_prompt_template | actor | critic_prompt_template | critic | regenerator_prompt_template | regenerator | parser
 
-topic = "amazon product review"
-few_shot_examples = ["This speaker absolutely sucks. The battery only lasts for around an hour and it didnt come charged. So overpriced",
-                     "These are the best towels ever. Super soft but don't leave lint everywhere. I love them!"
-]
+if __name__ == "__main__":
+    # Example Use
+    topic = "amazon product review"
+    few_shot_examples = ["This speaker absolutely sucks. The battery only lasts for around an hour and it didnt come charged. So overpriced",
+                        "These are the best towels ever. Super soft but don't leave lint everywhere. I love them!",
+                        "I bought this book for my daughter and she absolutely loves it. She's read it 3 times already! Highly recommend."
+                        "Don't buy. These batteries die after a few hours of use."
+    ]
+    trio = Trio(local=True)
+    refined_data_sample = trio.invoke_trio(topic, few_shot_examples, verbose=True)
 
-print(invoke_full_chain(topic, few_shot_examples))
+
