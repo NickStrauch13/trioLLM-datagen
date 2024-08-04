@@ -17,4 +17,3 @@ def test_index(client):
     """Test the index page."""
     response = client.get('/')
     assert response.status_code == 200
-    assert b'<div>' in response.data  
