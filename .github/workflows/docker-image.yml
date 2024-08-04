@@ -14,7 +14,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag llm-trio-datagen:$(date +%s)
+        id: build-image
+        run: |
+          IMAGE_TAG=$(date +%s)
+          docker build . --file Dockerfile --tag llm-trio-datagen:$IMAGE_TAG
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -23,7 +27,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Tag Docker image
-        run: docker tag llm-trio-datagen:$(date +%s) ${{ secrets.DOCKER_USERNAME }}/llm-trio-datagen:latest
+        run: docker tag llm-trio-datagen:$${{ env.IMAGE_TAG }} ${{ secrets.DOCKER_USERNAME }}/llm-trio-datagen:latest
 
       - name: Push Docker image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/llm-trio-datagen:latest
