@@ -2,12 +2,26 @@ import os
 import sys
 from langchain_core.runnables import Runnable
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/backend')))
 from base_model import BaseModel
 from actor import Actor
 from critic import Critic
 from regenerator import Regenerator
 from llm_trio import LLMTrio
+
+
+def test_base_model():
+    """
+    Test the BaseModel class.
+    Verify that the llm and parser attributes are created successfully
+    """
+    base_model = BaseModel()
+    llm = base_model.llm
+    parser = base_model.parser
+    assert isinstance(llm, ChatOpenAI) # When local=True, ChatOpenAI points to local LLaMA_CPP
+    assert isinstance(parser, StrOutputParser)
 
 
 def test_actor():
