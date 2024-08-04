@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Tag Docker image
-        run: docker tag llm-trio-datagen:$${{ env.IMAGE_TAG }} ${{ secrets.DOCKER_USERNAME }}/llm-trio-datagen:latest
+        run: docker tag llm-trio-datagen:${{ env.IMAGE_TAG }} ${{ secrets.DOCKER_USERNAME }}/llm-trio-datagen:latest
 
       - name: Push Docker image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/llm-trio-datagen:latest
