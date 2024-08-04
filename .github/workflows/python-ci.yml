@@ -6,28 +6,29 @@ on:
   pull_request:
     branches: [master, main]
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.x     # most up-to-date python version
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x # most up-to-date python version
 
-    - name: Install packages
-      run: make install         
+      - name: Install packages
+        run: make install
 
-    - name: Lint
-      run: make lint
+      - name: Lint
+        run: make lint
 
-    - name: Format Black
-      run: make format
-      
-    - name: Run tests
-      run: make test
+      - name: Format Black
+        run: make format
+
+      - name: Run tests
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: make test
