@@ -6,11 +6,11 @@ test:
 	python -m pytest -vv --cov=src/
 
 format:	
-	black src/*.py 
-	black tests/*.py
+	black src/
+	black tests/
 
 lint:
-	pylint --disable=R,C --ignore-patterns=test_.*?py src/*.py
+	PYTHONPATH=./src/backend pylint --disable=R,C --ignore-patterns=test_.*?py src/
 		
 all: install lint format test
 

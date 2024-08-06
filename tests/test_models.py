@@ -4,7 +4,10 @@ from langchain_core.runnables import Runnable
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/backend')))
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../src/backend"))
+)
 from base_model import BaseModel
 from actor import Actor
 from critic import Critic
