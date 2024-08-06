@@ -3,14 +3,14 @@ install:
 		pip install -r requirements.txt
 
 test:
-	python -m pytest -vv --cov=src/*.py
+	python -m pytest -vv --cov=src/
 
 format:	
 	black src/
 	black tests/
 
 lint:
-	PYTHONPATH=./src/backend pylint --disable=R,C --ignore-patterns=test_.*?py src/
+	pylint --disable=R,C --ignore-patterns=test_.*?py src/*.py
 		
 all: install lint format test
 
