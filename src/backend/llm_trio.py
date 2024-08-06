@@ -4,6 +4,7 @@ from regenerator import Regenerator
 from prompts import FEW_SHOT_TEMPLATE
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 FEW_SHOT_JOINER = "\n---\n"
