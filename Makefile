@@ -16,3 +16,6 @@ all: install lint format test
 
 activate:
 	source /home/vscode/venv/bin/activate
+
+llamafile:
+	bash run_llama_model.sh
