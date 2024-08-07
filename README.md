@@ -3,6 +3,8 @@
 
 # TrioLLM
 
+[--> Demo Video <--](https://youtu.be/tO4LxOXT4b4)
+
 ## Project Overview
 
 TrioLLM is a synthetic data generator composed of three LLMs: an Actor, a Critic, and a Regenerator. The purpose of this project is to provide a time-efficient alternative to manually creating or collecting datasets by automating the data generation process using language models.
@@ -172,6 +174,31 @@ To get started with TrioLLM, follow these steps:
 5. Download the generated dataset in CSV format.
 
 ![Webapp](https://private-user-images.githubusercontent.com/61529274/355601985-f79f56e3-b2ba-4ce6-a22f-909ae1db21fa.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjI5Nzg1NDEsIm5iZiI6MTcyMjk3ODI0MSwicGF0aCI6Ii82MTUyOTI3NC8zNTU2MDE5ODUtZjc5ZjU2ZTMtYjJiYS00Y2U2LWEyMmYtOTA5YWUxZGIyMWZhLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA4MDYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwODA2VDIxMDQwMVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTI2YWE5OGJiNGMwM2E5NzIxMzM1Y2NmNmMyNzUwYTczN2ViNWViMjYyYzE5YWFkZTI4YmY3ZmE0ZjY0MmU3MGYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.WaaV3C0md-oO5ZUUIG-NWKr_MGElj9-1opx_M-iYNyA)
+
+## Evaluation
+
+I evaluated the LLM Trio by comparing it against GPT-4o. I generated two distinct datasets—Amazon Product Reviews and Call Center Technician Call Transcripts—using both my LLM Trio and GPT-4o, and then conducted a human evaluation of the resulting datasets. My analysis focused on four key factors: Variance (the diversity of the dataset samples), Detail (the richness of information in each sample), Accuracy (the factual correctness of the data samples), and Realism (how believable and pertinent the samples were to the original topic). I scored each factor on a scale from 1 to 10 for both models and averaged the results. The LLM Trio outperformed GPT-4o in terms of Variance and Detail, scoring 9.5 and 10 respectively, but fell short in Accuracy and Realism, scoring 7.5 and 6.5 respectively. I beleive that the high temperature of the Actor contributed to the increased variance in the genreated samples, while the critic did a great job at highlighting areas where more facts could be inserted. However, the LLM Trio fell behind in accuracy likely due to the higher fequency of facts in the samples along with the weaker LLM's pretraining. Additionally, the GPT-4o responses were more realistic, and I belive this is because the Regenerator has the tendency to overcorrect the Actor's samples, which can lead to less realistic responses. Overall, the LLM Trio using a weaker LLM, Mistral-7b-Instruct, was able to produce high quality data samples that outperformed GPT-4o in some regards.
+
+| Model    | Variance | Detail | Accuracy | Realism |
+| -------- | -------- | ------ | -------- | ------- |
+| LLM Trio | 9.5      | 10     | 7.5      | 6.5     |
+| GPT-4o   | 6        | 7.5    | 9        | 8       |
+
+Latency was a significant challenge in evaluating my LLM Trio synthetic data generator. The architecture required three sequential LLM calls, which created a major bottleneck. Additionally, I was running the LLM locally on an NVIDIA GeForce RTX 3050 Ti with only 4GB of memory. Consequently, the LLM Trio took approximately 283 seconds per data sample on average, while GPT-4o was near instantaneous. Although this latency is a crucial factor to consider, the data generation task does not necessarily require immediate results. It can be run overnight or in the background, mitigating the impact of the longer processing time.
+
+_While generating data samples for this comparison, I noticed that the LLM Trio and GPT-4o both happened to generate a review for a pressure cooker. I included these samples below for a direct comparison:_
+
+GPT-4o:
+
+```
+I absolutely love this pressure cooker! It has made meal preparation so much faster and easier. The various preset cooking programs are very convenient, and it handles everything from soups to desserts perfectly. The stainless steel inner pot is durable and easy to clean. I appreciate the safety features, such as the lid locking mechanism and pressure release valve. It’s a versatile appliance that has become a staple in my kitchen. Highly recommend it to anyone looking to save time on cooking.
+```
+
+LLM Trio:
+
+```
+I've had my Instant Pot Duo Plus for about a month now and I couldn't be happier with my purchase. This 7-in-1 electric pressure cooker has revolutionized my cooking experience, saving me at least 2 hours a week by allowing me to cook rice, beans, and even my morning oatmeal in a fraction of the time it used to take in a traditional crockpot. For instance, a single cycle in the Instant Pot cooks 3 cups of rice or 6 cups of beans, saving me significant time and energy compared to the hours-long process in a crockpot. The saute function is also a game changer, allowing me to brown meats and saute vegetables directly in the pot before pressure cooking, eliminating the need for a separate pan. The interface is intuitive and easy to use, with preset buttons for common cooking tasks such as rice, beans, and soup. I highly recommend this product.
+```
 
 ## Testing, Linting, and Formatting
 
